@@ -14,7 +14,7 @@ con.connect(function (err) {
     if (err) throw err;
     else {
         app.listen(4000, () => {
-            console.log("App listening on port 80")
+            console.log("App listening on port 4000")
         })
     }
 });
@@ -49,12 +49,16 @@ app.get('/players', (req, res) => {
 app.post('/players', (req, res) => {
     const userdata = req.body
     console.log(userdata)
-    var sql = `INSERT INTO leaderboard(user_name, sfID, points) VALUES ${userdata.user_name, userdata.sfID, userdata.points}`;
+    if (err) {
+        console.log("Error is ", err)
+        throw err
+    };
+    var sql = ` INSERT INTO leaderboard (user_name, sfID, points) VALUES ${userdata.user_name, userdata.sfID, userdata.points}`;
     con.query(sql, function (err, result) {
         if (!err) {
             res.status(200).json(result)
         }
-        else{
+        else {
             throw err
             res.status(400).json({ error: 'Cannot update the score' })
         }
