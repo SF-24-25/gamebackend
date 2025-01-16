@@ -31,63 +31,90 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-    res.send("Server is running and database is connected!");
+    try {
+        res.send("Server is running and database is connected!");
+    } catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+
 });
 
 app.get('/players', (req, res) => {
-    con.query("SELECT * FROM leaderboard ORDER BY points desc, user_name", function (err, players) {
-        if (err) {
-            console.log(err)
-            return res.status(500).json({ error: "Could not fetch the data" })
-        }
-        else {
-            res.status(200).json(players)
-        }
-    });
+    try {
+        con.query("SELECT * FROM leaderboard ORDER BY points desc, user_name", function (err, players) {
+            if (err) {
+                return res.status(500).json({ message: "Could not fetch the data", error: err.message })
+            }
+            else {
+                return res.status(200).json({message: "Players Fetched Successfully",players: players})
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
 })
 
-app.post('/players', (req, res, err) => {
-    const userdata = req.body
-    console.log(userdata)
-    if (err) {
-        console.log("Error is ", err)
-        throw err
-    };
-    var sql = ` INSERT INTO leaderboard (user_name, sfID, points) VALUES (${userdata.user_name}, ${userdata.sfID}, ${userdata.points})`;
-    con.query(sql, function (err, result) {
-        if (!err) {
-            res.status(200).json(result)
-        }
-        else {
-            throw err
-            res.status(400).json({ error: 'Cannot update the score' })
-        }
+const checkExistingPlayer = (userdata) => {
+    return new Promise((resolve, reject) => {
+        con.query("SELECT * FROM leaderboard WHERE sfID = ?", [userdata.sfID], (err, result) => {
+            if (err) {
+                res.status(500).json({ message: "Error while fetching Player's details", error: err.message });
+                return reject(err)
+            }
+            if (result.length > 0 && result[0].points < userdata.points) {
+                con.query("UPDATE leaderboard SET points = ? WHERE sfID = ?", [userdata.points, userdata.sfID], (err) => {
+                    if (err) {
+                        res.status(500).json({ message: "Error while updating Player's points", error: err.message });
+                        return reject(err)
+                    }
+                    res.status(200).json({ message: "Player updated successfully" })
+                    resolve(true);
+                });
+            } else {
+                resolve(false)
+            }
+        });
     });
+};
+
+app.post('/player',  async(req, res) => {
+    const userdata = req.body;
+
+    if (!userdata.user_name || !userdata.sfID || !userdata.points) {
+        return res.status(400).json({ message: 'Invalid input data' });
+    }
+
+    try {
+        const playerUpdated = await checkExistingPlayer(userdata);
+        if (playerUpdated) {
+            return res.status(200).json({ message: 'Player updated successfully' });
+        }
+        const sql = `INSERT INTO leaderboard (user_name, sfID, points) VALUES (?, ?, ?)`;
+        const values = [userdata.user_name, userdata.sfID, userdata.points];
+
+        con.query(sql, values, (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Database error', details: err.message });
+            }
+            res.status(200).json({ message: 'Player added successfully' });
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error'});
+    }
+});
+
+app.get('/player', (req, res) => {
+    const sfID = req.body
+    try {
+        con.query(`SELECT * FROM leaderboard WHERE sfID = ?`, [sfID], function (err, player) {
+            if (err) {
+                return res.status(500).json({ message: "Could not fetch the data", error: err.message })
+            }
+            else {
+                res.status(200).json({message: "Player's details fetched successfully",player: player})
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
 })
-
-//     const user = req.body
-//     db.collection("users")
-//         .insertOne(user)
-//         .then(result => {
-//             res.status(201).json(result)
-//         })
-//         .catch(err => {
-//             res.status(400).json({ error: 'Cannot update the score' })
-//         })
-// })
-
-// app.get('/users/:id', (req, res) => {
-//     if (ObjectId.isValid()) {
-//         db.collection("users")
-//             .findOne({ _id: ObjectId(req.params.id) })
-//             .then(doc => {
-//                 res.status(200).json(doc)
-//             })
-//             .catch(err => {
-//                 res.status(408).json({ error: "Could not fetch the data of the user" })
-//             })
-//     }
-//     else {
-//         res.status(412).json({ error: "Enter a valid id" })
-//     }
-// })
