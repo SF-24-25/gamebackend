@@ -2,12 +2,13 @@ import express from 'express';
 import mysql from 'mysql2';
 import cors from "cors";
 import dotenv from "dotenv";
+import http from "http";
 
+const app = express();
 app.use(express.json())
 app.use(cors())
 dotenv.config()
 
-const app = express();
 const PORT = 4000
 
 var con = mysql.createConnection({
@@ -17,12 +18,13 @@ var con = mysql.createConnection({
     database: process.env.DATABASE
 });
 
+const server = http.createServer(app);
 
 con.connect(function (err) {
     if (err) throw err;
     else {
         app.listen(PORT, () => {
-          console.log(`API listening on PORT ${PORT} `)
+            console.log(`API listening on PORT ${PORT} `)
         })
     }
 });
@@ -131,4 +133,4 @@ app.get('/player', (req, res) => {
     }
 });
 
-module.exports = app
+// module.exports = app
