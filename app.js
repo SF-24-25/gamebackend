@@ -22,10 +22,10 @@ var con = mysql.createConnection({
 
 // console.log(con)
 
-console.log(process.env.HOST)
-console.log(process.env.USER)
-console.log(process.env.PASSWORD)
-console.log(process.env.DATABASE)
+// console.log(process.env.HOST)
+// console.log(process.env.USER)
+// console.log(process.env.PASSWORD)
+// console.log(process.env.DATABASE)
 
 const server = http.createServer(app);
 // console.log(server);
@@ -79,7 +79,7 @@ const checkExistingPlayer = (userdata) => {
                 res.status(500).json({ code: 2, message: "Error while fetching Player's details", error: err.message });
                 return reject(err)
             }
-            console.log(result[0].points, userdata.points)
+            // console.log(result[0].points, userdata.points)
             if (result[0].points === userdata.points) resolve(true);
             else if (result.length > 0 && result[0].points < userdata.points) {
                 con.query("UPDATE leaderboard SET points = ? WHERE sfID = ?", [userdata.points, userdata.sfID], (err) => {
