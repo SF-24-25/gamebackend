@@ -9,13 +9,16 @@ app.use(express.json())
 app.use(cors())
 dotenv.config()
 
-const PORT = 4000
+const PORT = 14452
 
 var con = mysql.createConnection({
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
-    database: process.env.DATABASE
+    database: process.env.DATABASE,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 const server = http.createServer(app);
