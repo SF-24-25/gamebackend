@@ -17,18 +17,9 @@ var con = mysql.createConnection({
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
     port:14452
-     
 });
 
-// console.log(con)
-
-// console.log(process.env.HOST)
-// console.log(process.env.USER)
-// console.log(process.env.PASSWORD)
-// console.log(process.env.DATABASE)
-
 const server = http.createServer(app);
-// console.log(server);
 
 con.connect(function (err) {
     if (err) throw err;
@@ -79,15 +70,12 @@ const checkExistingPlayer = (userdata) => {
                 res.status(500).json({ code: 2, message: "Error while fetching Player's details", error: err.message });
                 return reject(err)
             }
-            // console.log(result[0].points, userdata.points)
-            if (result[0].points === userdata.points) resolve(true);
-            else if (result.length > 0 && result[0].points < userdata.points) {
+            if (result.length > 0 && result[0].points <= userdata.points) {
                 con.query("UPDATE leaderboard SET points = ? WHERE sfID = ?", [userdata.points, userdata.sfID], (err) => {
                     if (err) {
-                        res.status(500).json({ code: 3, message: "Error while updating Player's points", error: err.message });
+                        // res.status(500).json({ code: 3, message: "Error while updating Player's points", error: err.message });
                         return reject(err)
                     }
-                    res.status(200).json({ code: 0, message: "Player updated successfully" })
                     resolve(true);
                 });
             }
