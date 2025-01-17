@@ -6,7 +6,7 @@ const app = express();
 
 app.use(express.json())
 app.use(cors())
-dotenv.config({ path: './.env' })
+dotenv.config()
 
 var con = mysql.createConnection({
     host: process.env.HOST,
