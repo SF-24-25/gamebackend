@@ -22,11 +22,12 @@ var con = mysql.createConnection({
 });
 
 const server = http.createServer(app);
+// console.log(server);
 
 con.connect(function (err) {
     if (err) throw err;
     else {
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`API listening on PORT ${PORT} `)
         })
     }
