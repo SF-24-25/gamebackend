@@ -102,7 +102,7 @@ app.post('/player', async (req, res) => {
 
         con.query(sql, values, (err, result) => {
             if (err) {
-                return res.status(402).json({ code: 4, message: "Player's score insertion failed"});
+                return res.status(400).json({ code: 4, message: "Player's score insertion failed"});
             }
             res.status(200).json({ code: 0, message: 'Player added successfully' });
         });
@@ -185,7 +185,7 @@ app.post('/cans/player', async (req, res) => {
 
         con.query(sql, values, (err, result) => {
             if (err) {
-                return res.status(402).json({ code: 4, message: "Player's score insertion failed"});
+                return res.status(400).json({ code: 4, message: "Player's score insertion failed"});
             }
             res.status(200).json({ code: 0, message: 'Player added successfully' });
         });
