@@ -53,7 +53,7 @@ app.get('/players', (req, res) => {
     try {
         con.query("SELECT *, rank() OVER (ORDER BY points desc) AS players_rank FROM leaderboard ORDER BY points DESC, user_name", function (err, players) {
             if (err) {
-                return res.status(500).json({ code: 1, message: "Could not fetch the data", error: err.message })
+                return res.status(401).json({ code: 1, message: "Could not fetch the data", error: err.message })
             }
             else {
                 return res.status(200).json({ code: 0, message: "Players Fetched Successfully", players: players })
@@ -102,7 +102,7 @@ app.post('/player', async (req, res) => {
 
         con.query(sql, values, (err, result) => {
             if (err) {
-                return res.status(500).json({ code: 4, message: "Player's score insertion failed"});
+                return res.status(402).json({ code: 4, message: "Player's score insertion failed"});
             }
             res.status(200).json({ code: 0, message: 'Player added successfully' });
         });
@@ -121,7 +121,7 @@ app.get('/player', (req, res) => {
     try {
         con.query(`SELECT * FROM leaderboard WHERE sfID = ?`, [sfID], function (err, player) {
             if (err) {
-                return res.status(500).json({ code: 5, message: "Could not fetch the data", error: err.message });
+                return res.status(401).json({ code: 5, message: "Could not fetch the data", error: err.message });
             }
             res.status(200).json({ code: 0, message: "Player's details fetched successfully", player: player });
         });
@@ -136,7 +136,7 @@ app.get('/cans/players', (req, res) => {
     try {
         con.query("SELECT *, rank() OVER (ORDER BY points_m desc) AS players_rank FROM leaderboard_cans ORDER BY points_m DESC, user_name", function (err, players) {
             if (err) {
-                return res.status(500).json({ code: 1, message: "Could not fetch the data", error: err.message })
+                return res.status(401).json({ code: 1, message: "Could not fetch the data", error: err.message })
             }
             else {
                 return res.status(200).json({ code: 0, message: "Players Fetched Successfully", players: players })
@@ -185,7 +185,7 @@ app.post('/cans/player', async (req, res) => {
 
         con.query(sql, values, (err, result) => {
             if (err) {
-                return res.status(500).json({ code: 4, message: "Player's score insertion failed"});
+                return res.status(402).json({ code: 4, message: "Player's score insertion failed"});
             }
             res.status(200).json({ code: 0, message: 'Player added successfully' });
         });
@@ -205,7 +205,7 @@ app.get('/cans/player', (req, res) => {
     try {
         con.query(`SELECT * FROM leaderboard_cans WHERE sfID = ?`, [sfID], function (err, player) {
             if (err) {
-                return res.status(500).json({ code: 5, message: "Could not fetch the data", error: err.message });
+                return res.status(401).json({ code: 5, message: "Could not fetch the data", error: err.message });
             }
             res.status(200).json({ code: 0, message: "Player's details fetched successfully", player: player });
         });
