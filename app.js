@@ -123,6 +123,9 @@ app.post('/checkPlayer', async (req, res) => {
             if(user_pin.length === 0) {
                 return res.status(200).json({ code: 0, message: "New User" });
             }
+            if(pin === user_pin[0].pin) {
+                return res.status(200).json({ code: 0, message: "Ennter the game"});
+            }
             if(pin !== user_pin[0].pin && user_pin[0].pin !== null) {
                 return res.status(400).json({ code: 10, message: "User name and pin did not match" });
             }
