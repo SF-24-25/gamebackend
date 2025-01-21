@@ -87,7 +87,7 @@ const checkExistingPlayer = (userdata) => {
 app.post('/player', async (req, res) => {
     const userdata = req.body;
 
-    if (!userdata.user_name || !userdata.points) {
+    if (!userdata.user_name || !userdata.points || userdata.pin) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
@@ -96,8 +96,8 @@ app.post('/player', async (req, res) => {
         if (playerUpdated) {
             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
         }
-        const sql = `INSERT INTO leaderb_witch (user_name, points) VALUES (?, ?)`;
-        const values = [userdata.user_name, userdata.points];
+        const sql = `INSERT INTO leaderb_witch (user_name, points, pin) VALUES (?, ?, ?)`;
+        const values = [userdata.user_name, userdata.points, userdata.pin];
 
         con.query(sql, values, (err, result) => {
             if (err) {
