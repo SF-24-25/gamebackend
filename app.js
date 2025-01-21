@@ -87,7 +87,7 @@ const checkExistingPlayer = (userdata) => {
 app.post('/player', async (req, res) => {
     const userdata = req.body;
 
-    if (!userdata.user_name || !userdata.points || userdata.pin) {
+    if (!userdata.user_name || !userdata.points || !userdata.pin) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
@@ -200,7 +200,7 @@ const checkExistingPlayerCans = (userdata) => {
 app.post('/cans/player', async (req, res) => {
     const userdata = req.body;
 
-    if (!userdata.user_name || !userdata.points_m || userdata.pin) {
+    if (!userdata.user_name || !userdata.points_m || !userdata.pin) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
