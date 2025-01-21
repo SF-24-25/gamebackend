@@ -111,7 +111,7 @@ app.post('/player', async (req, res) => {
 });
 
 app.get('/player', (req, res) => {
-    const user_name = req.query.sfID;
+    const user_name = req.query.user_name;
 
     if (!user_name) {
         return res.status(400).json({ code: 1, message: "user_name is required" });
@@ -176,12 +176,12 @@ app.get('/cans/players', (req, res) => {
 
 const checkExistingPlayerCans = (userdata) => {
     return new Promise((resolve, reject) => {
-        con.query("SELECT * FROM leaderb_cans WHERE sfID = ?", [userdata.sfID], (err, result) => {
+        con.query("SELECT * FROM leaderb_cans WHERE user_name = ?", [userdata.user_name], (err, result) => {
             if (err) {
                 return reject(err)
             }
             if (result.length > 0 && result[0].points_m <= userdata.points_m) {
-                con.query("UPDATE leaderb_cans SET points_m = ? WHERE sfID = ?", [userdata.points_m, userdata.sfID], (err) => {
+                con.query("UPDATE leaderb_cans SET points_m = ? WHERE user_name = ?", [userdata.points_m, userdata.user_name], (err) => {
                     if (err) {
                         return reject(err)
                     }
@@ -198,7 +198,7 @@ const checkExistingPlayerCans = (userdata) => {
 app.post('/cans/player', async (req, res) => {
     const userdata = req.body;
 
-    if (!userdata.user_name || !userdata.sfID || !userdata.points_m) {
+    if (!userdata.user_name || !userdata.points_m) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
@@ -207,8 +207,8 @@ app.post('/cans/player', async (req, res) => {
         if (playerUpdated) {
             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
         }
-        const sql = `INSERT INTO leaderb_cans (user_name, sfID, points_m) VALUES (?, ?, ?)`;
-        const values = [userdata.user_name, userdata.sfID, userdata.points_m];
+        const sql = `INSERT INTO leaderb_cans (user_name, points_m) VALUES (?, ?)`;
+        const values = [userdata.user_name, userdata.points_m];
 
         con.query(sql, values, (err, result) => {
             if (err) {
@@ -223,14 +223,14 @@ app.post('/cans/player', async (req, res) => {
 
 
 app.get('/cans/player', (req, res) => {
-    const sfID = req.query.sfID;
+    const user_name = req.query.user_name;
 
-    if (!sfID) {
-        return res.status(400).json({ code: 1, message: "sfID is required" });
+    if (!user_name) {
+        return res.status(400).json({ code: 1, message: "user_name is required" });
     }
 
     try {
-        con.query(`SELECT * FROM leaderb_cans WHERE sfID = ?`, [sfID], function (err, player) {
+        con.query(`SELECT * FROM leaderb_cans WHERE user_name = ?`, [user_name], function (err, player) {
             if (err) {
                 return res.status(401).json({ code: 5, message: "Could not fetch the data", error: err.message });
             }
