@@ -120,8 +120,7 @@ app.post('/checkPlayer', async (req, res) => {
 
     try{
         con.query(`SELECT pin FROM leaderb_witch WHERE user_name = ?`, [user_name], function (err, user_pin  ) {
-            console.log(user_pin)
-            if(user_pin[0].pin === null) {
+            if(user_pin.length=== 0) {
                 return res.status(200).json({ code: 0, message: "New User" });
             }
             if(pin === user_pin[0].pin) {
