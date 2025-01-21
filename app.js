@@ -9,7 +9,7 @@ app.use(express.json())
 app.use(cors())
 dotenv.config()
 
-const PORT = 14452
+const PORT = 14452.
 // const PORT = 4000
 
 var con = mysql.createConnection({
@@ -115,7 +115,7 @@ app.post('/checkPlayer', async (req, res) => {
     const pin = req.body.pin;
 
     if(!user_name || !pin) {
-        return res.status(400).json({ code: 1, message: "user_name and pin are required" });
+        return res.status(400).json({ code: 1, message: "User_name and pin are required" });
     }
 
     try{
@@ -124,7 +124,7 @@ app.post('/checkPlayer', async (req, res) => {
                 return res.status(200).json({ code: 0, message: "New User" });
             }
             if(pin === user_pin[0].pin) {
-                return res.status(200).json({ code: 0, message: "Ennter the game"});
+                return res.status(200).json({ code: 0, message: "Enter the game"});
             }
             if(pin !== user_pin[0].pin && user_pin[0].pin !== null) {
                 return res.status(400).json({ code: 10, message: "User name and pin did not match" });
@@ -144,7 +144,7 @@ app.get('/player', (req, res) => {
     const user_name = req.query.user_name;
 
     if (!user_name) {
-        return res.status(400).json({ code: 1, message: "user_name is required" });
+        return res.status(400).json({ code: 1, message: "User_name is required" });
     }
 
     try {
@@ -158,34 +158,6 @@ app.get('/player', (req, res) => {
         res.status(500).json({ code: -1, message: 'Internal server error' });
     }
 });
-
-// app.post('/score/player', async (req, res) => {
-//     const score = req.body;
-
-//     if (!score) {
-//         return res.status(400).json({ message: 'Invalid input data' });
-//     }
-
-//     try {
-//         const userSfId = ((JSON.parse(localStorage.getItem('userData')))?.user.sfId)
-//         const user_name = ((JSON.parse(localStorage.getItem('userData')))?.user.name)
-//         const playerUpdated = await checkExistingPlayer(userdata);
-//         if (playerUpdated) {
-//             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
-//         }
-//         const sql = `INSERT INTO leaderb_witch (user_name, sfID, points) VALUES (?, ?, ?)`;
-//         const values = [score, userSfId, user_name];
-
-//         con.query(sql, values, (err, result) => {
-//             if (err) {
-//                 return res.status(400).json({ code: 4, message: "Player's score insertion failed"});
-//             }
-//             res.status(200).json({ code: 0, message: 'Player added successfully' });
-//         });
-//     } catch (error) {
-//         res.status(500).json({ code: -1, message: 'Internal server error' });
-//     }
-// });
 
 // Smash the cans 
 
@@ -256,7 +228,7 @@ app.get('/cans/player', (req, res) => {
     const user_name = req.query.user_name;
 
     if (!user_name) {
-        return res.status(400).json({ code: 1, message: "user_name is required" });
+        return res.status(400).json({ code: 1, message: "User_name is required" });
     }
 
     try {
@@ -267,6 +239,37 @@ app.get('/cans/player', (req, res) => {
             res.status(200).json({ code: 0, message: "Player's details fetched successfully", player: player });
         });
     } catch (error) {
+        res.status(500).json({ code: -1, message: 'Internal server error' });
+    }
+});
+
+
+app.post('/cans/checkPlayer', async (req, res) => {
+    const user_name = req.body.user_name;
+    const pin = req.body.pin;
+
+    if(!user_name || !pin) {
+        return res.status(400).json({ code: 1, message: "User name and pin are required" });
+    }
+
+    try{
+        con.query(`SELECT pin FROM leaderb_cans WHERE user_name = ?`, [user_name], function (err, user_pin  ) {
+            if(user_pin.length=== 0) {
+                return res.status(200).json({ code: 0, message: "New User" });
+            }
+            if(pin === user_pin[0].pin) {
+                return res.status(200).json({ code: 0, message: "Enter the game"});
+            }
+            if(pin !== user_pin[0].pin && user_pin[0].pin !== null) {
+                return res.status(400).json({ code: 10, message: "User name and pin did not match" });
+            }
+            if (err) {
+                return res.status(401).json({ code: 5, message: "Could not fetch the data", error: err.message });
+            }
+            res.status(200).json({ code: 0, message: "Player's details fetched successfully", player: player });
+        });
+    }
+    catch (error) {
         res.status(500).json({ code: -1, message: 'Internal server error' });
     }
 });
