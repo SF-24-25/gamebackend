@@ -9,7 +9,7 @@ app.use(express.json())
 app.use(cors())
 dotenv.config()
 
-const PORT = 14452.
+const PORT = 14452
 // const PORT = 4000
 
 var con = mysql.createConnection({
