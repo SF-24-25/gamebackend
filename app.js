@@ -110,6 +110,33 @@ app.post('/player', async (req, res) => {
     }
 });
 
+app.post('/checkPlayer', async (req, res) => {
+    const user_name = req.body.user_name;
+    const pin = req.body.pin;
+
+    if(!user_name || !pin) {
+        return res.status(400).json({ code: 1, message: "user_name and pin are required" });
+    }
+
+    try{
+        con.query(`SELECT pin FROM leaderb_witch WHERE user_name = ?`, [user_name], function (err, user_pin  ) {
+            if(user_pin.length === 0) {
+                return res.status(200).json({ code: 0, message: "New User" });
+            }
+            if(pin !== user_pin[0].pin && user_pin[0].pin !== null) {
+                return res.status(400).json({ code: 10, message: "User name and pin did not match" });
+            }
+            if (err) {
+                return res.status(401).json({ code: 5, message: "Could not fetch the data", error: err.message });
+            }
+            res.status(200).json({ code: 0, message: "Player's details fetched successfully", player: player });
+        });
+    }
+    catch (error) {
+        res.status(500).json({ code: -1, message: 'Internal server error' });
+    }
+});
+
 app.get('/player', (req, res) => {
     const user_name = req.query.user_name;
 
