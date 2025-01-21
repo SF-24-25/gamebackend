@@ -65,12 +65,12 @@ app.get('/players', (req, res) => {
 
 const checkExistingPlayer = (userdata) => {
     return new Promise((resolve, reject) => {
-        con.query("SELECT * FROM leaderb_witch WHERE sfID = ?", [userdata.sfID], (err, result) => {
+        con.query("SELECT * FROM leaderb_witch WHERE user_name = ?", [userdata.user_name], (err, result) => {
             if (err) {
                 return reject(err)
             }
             if (result.length > 0 && result[0].points <= userdata.points) {
-                con.query("UPDATE leaderb_witch SET points = ? WHERE sfID = ?", [userdata.points, userdata.sfID], (err) => {
+                con.query("UPDATE leaderb_witch SET points = ? WHERE user_name = ?", [userdata.points, userdata.user_name], (err) => {
                     if (err) {
                         return reject(err)
                     }
@@ -87,7 +87,7 @@ const checkExistingPlayer = (userdata) => {
 app.post('/player', async (req, res) => {
     const userdata = req.body;
 
-    if (!userdata.user_name || !userdata.sfID || !userdata.points) {
+    if (!userdata.user_name || !userdata.points) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
@@ -96,8 +96,8 @@ app.post('/player', async (req, res) => {
         if (playerUpdated) {
             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
         }
-        const sql = `INSERT INTO leaderb_witch (user_name, sfID, points) VALUES (?, ?, ?)`;
-        const values = [userdata.user_name, userdata.sfID, userdata.points];
+        const sql = `INSERT INTO leaderb_witch (user_name, points) VALUES (?, ?)`;
+        const values = [userdata.user_name, userdata.points];
 
         con.query(sql, values, (err, result) => {
             if (err) {
