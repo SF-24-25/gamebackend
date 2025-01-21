@@ -144,7 +144,7 @@ app.get('/player', (req, res) => {
     const user_name = req.query.user_name;
 
     if (!user_name) {
-        return res.status(400).json({ code: 1, message: "User_name is required" });
+        return res.status(400).json({ code: 1, message: "User name is required" });
     }
 
     try {
@@ -200,7 +200,7 @@ const checkExistingPlayerCans = (userdata) => {
 app.post('/cans/player', async (req, res) => {
     const userdata = req.body;
 
-    if (!userdata.user_name || !userdata.points_m) {
+    if (!userdata.user_name || !userdata.points_m || userdata.pin) {
         return res.status(400).json({ message: 'Invalid input data' });
     }
 
@@ -209,8 +209,8 @@ app.post('/cans/player', async (req, res) => {
         if (playerUpdated) {
             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
         }
-        const sql = `INSERT INTO leaderb_cans (user_name, points_m) VALUES (?, ?)`;
-        const values = [userdata.user_name, userdata.points_m];
+        const sql = `INSERT INTO leaderb_cans (user_name, points_m) VALUES (?, ?, ?)`;
+        const values = [userdata.user_name, userdata.points_m, userdata.pin];
 
         con.query(sql, values, (err, result) => {
             if (err) {
@@ -222,7 +222,6 @@ app.post('/cans/player', async (req, res) => {
         res.status(500).json({ code: -1, message: 'Internal server error' });
     }
 });
-
 
 app.get('/cans/player', (req, res) => {
     const user_name = req.query.user_name;
@@ -242,7 +241,6 @@ app.get('/cans/player', (req, res) => {
         res.status(500).json({ code: -1, message: 'Internal server error' });
     }
 });
-
 
 app.post('/cans/checkPlayer', async (req, res) => {
     const user_name = req.body.user_name;
