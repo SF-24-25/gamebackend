@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
 
 app.get('/players', (req, res) => {
     try {
-        con.query("SELECT *, rank() OVER (ORDER BY points desc) AS players_rank FROM leaderboard ORDER BY points DESC, user_name", function (err, players) {
+        con.query("SELECT *, rank() OVER (ORDER BY points desc) AS players_rank FROM leaderb_witch ORDER BY points DESC, user_name", function (err, players) {
             if (err) {
                 return res.status(401).json({ code: 1, message: "Could not fetch the data", error: err.message })
             }
@@ -65,12 +65,12 @@ app.get('/players', (req, res) => {
 
 const checkExistingPlayer = (userdata) => {
     return new Promise((resolve, reject) => {
-        con.query("SELECT * FROM leaderboard WHERE sfID = ?", [userdata.sfID], (err, result) => {
+        con.query("SELECT * FROM leaderb_witch WHERE sfID = ?", [userdata.sfID], (err, result) => {
             if (err) {
                 return reject(err)
             }
             if (result.length > 0 && result[0].points <= userdata.points) {
-                con.query("UPDATE leaderboard SET points = ? WHERE sfID = ?", [userdata.points, userdata.sfID], (err) => {
+                con.query("UPDATE leaderb_witch SET points = ? WHERE sfID = ?", [userdata.points, userdata.sfID], (err) => {
                     if (err) {
                         return reject(err)
                     }
@@ -96,7 +96,7 @@ app.post('/player', async (req, res) => {
         if (playerUpdated) {
             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
         }
-        const sql = `INSERT INTO leaderboard (user_name, sfID, points) VALUES (?, ?, ?)`;
+        const sql = `INSERT INTO leaderb_witch (user_name, sfID, points) VALUES (?, ?, ?)`;
         const values = [userdata.user_name, userdata.sfID, userdata.points];
 
         con.query(sql, values, (err, result) => {
@@ -111,14 +111,14 @@ app.post('/player', async (req, res) => {
 });
 
 app.get('/player', (req, res) => {
-    const sfID = req.query.sfID;
+    const user_name = req.query.sfID;
 
-    if (!sfID) {
-        return res.status(400).json({ code: 1, message: "sfID is required" });
+    if (!user_name) {
+        return res.status(400).json({ code: 1, message: "user_name is required" });
     }
 
     try {
-        con.query(`SELECT * FROM leaderboard WHERE sfID = ?`, [sfID], function (err, player) {
+        con.query(`SELECT * FROM leaderb_witch WHERE user_name = ?`, [user_name], function (err, player) {
             if (err) {
                 return res.status(401).json({ code: 5, message: "Could not fetch the data", error: err.message });
             }
@@ -129,44 +129,33 @@ app.get('/player', (req, res) => {
     }
 });
 
+// app.post('/score/player', async (req, res) => {
+//     const score = req.body;
 
+//     if (!score) {
+//         return res.status(400).json({ message: 'Invalid input data' });
+//     }
 
+//     try {
+//         const userSfId = ((JSON.parse(localStorage.getItem('userData')))?.user.sfId)
+//         const user_name = ((JSON.parse(localStorage.getItem('userData')))?.user.name)
+//         const playerUpdated = await checkExistingPlayer(userdata);
+//         if (playerUpdated) {
+//             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
+//         }
+//         const sql = `INSERT INTO leaderb_witch (user_name, sfID, points) VALUES (?, ?, ?)`;
+//         const values = [score, userSfId, user_name];
 
-app.post('/score/player', async (req, res) => {
-    const score = req.body;
-
-    if (!score) {
-        return res.status(400).json({ message: 'Invalid input data' });
-    }
-
-    try {
-        const userSfId = ((JSON.parse(localStorage.getItem('userData')))?.user.sfId)
-        const user_name = ((JSON.parse(localStorage.getItem('userData')))?.user.name)
-        const playerUpdated = await checkExistingPlayer(userdata);
-        if (playerUpdated) {
-            return res.status(200).json({ code: 0, message: 'Score updated successfully' });
-        }
-        const sql = `INSERT INTO leaderboard (user_name, sfID, points) VALUES (?, ?, ?)`;
-        const values = [score, userSfId, user_name];
-
-        con.query(sql, values, (err, result) => {
-            if (err) {
-                return res.status(400).json({ code: 4, message: "Player's score insertion failed"});
-            }
-            res.status(200).json({ code: 0, message: 'Player added successfully' });
-        });
-    } catch (error) {
-        res.status(500).json({ code: -1, message: 'Internal server error' });
-    }
-});
-
-
-
-
-
-
-
-
+//         con.query(sql, values, (err, result) => {
+//             if (err) {
+//                 return res.status(400).json({ code: 4, message: "Player's score insertion failed"});
+//             }
+//             res.status(200).json({ code: 0, message: 'Player added successfully' });
+//         });
+//     } catch (error) {
+//         res.status(500).json({ code: -1, message: 'Internal server error' });
+//     }
+// });
 
 // Smash the cans 
 
