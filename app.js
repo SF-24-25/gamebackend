@@ -161,7 +161,7 @@ app.get('/player', (req, res) => {
 
 app.get('/cans/players', (req, res) => {
     try {
-        con.query("SELECT *, rank() OVER (ORDER BY points_m desc) AS players_rank FROM leaderboard_cans ORDER BY points_m DESC, user_name", function (err, players) {
+        con.query("SELECT *, rank() OVER (ORDER BY points_m desc) AS players_rank FROM leaderb_cans ORDER BY points_m DESC, user_name", function (err, players) {
             if (err) {
                 return res.status(401).json({ code: 1, message: "Could not fetch the data", error: err.message })
             }
@@ -176,12 +176,12 @@ app.get('/cans/players', (req, res) => {
 
 const checkExistingPlayerCans = (userdata) => {
     return new Promise((resolve, reject) => {
-        con.query("SELECT * FROM leaderboard_cans WHERE sfID = ?", [userdata.sfID], (err, result) => {
+        con.query("SELECT * FROM leaderb_cans WHERE sfID = ?", [userdata.sfID], (err, result) => {
             if (err) {
                 return reject(err)
             }
             if (result.length > 0 && result[0].points_m <= userdata.points_m) {
-                con.query("UPDATE leaderboard_cans SET points_m = ? WHERE sfID = ?", [userdata.points_m, userdata.sfID], (err) => {
+                con.query("UPDATE leaderb_cans SET points_m = ? WHERE sfID = ?", [userdata.points_m, userdata.sfID], (err) => {
                     if (err) {
                         return reject(err)
                     }
@@ -207,7 +207,7 @@ app.post('/cans/player', async (req, res) => {
         if (playerUpdated) {
             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
         }
-        const sql = `INSERT INTO leaderboard_cans (user_name, sfID, points_m) VALUES (?, ?, ?)`;
+        const sql = `INSERT INTO leaderb_cans (user_name, sfID, points_m) VALUES (?, ?, ?)`;
         const values = [userdata.user_name, userdata.sfID, userdata.points_m];
 
         con.query(sql, values, (err, result) => {
@@ -230,7 +230,7 @@ app.get('/cans/player', (req, res) => {
     }
 
     try {
-        con.query(`SELECT * FROM leaderboard_cans WHERE sfID = ?`, [sfID], function (err, player) {
+        con.query(`SELECT * FROM leaderb_cans WHERE sfID = ?`, [sfID], function (err, player) {
             if (err) {
                 return res.status(401).json({ code: 5, message: "Could not fetch the data", error: err.message });
             }
