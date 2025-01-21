@@ -46,7 +46,6 @@ app.get('/', (req, res) => {
     } catch (err) {
         res.status(500).json({ code: -1, message: 'Internal server error' });
     }
-
 });
 
 app.get('/players', (req, res) => {
@@ -129,6 +128,45 @@ app.get('/player', (req, res) => {
         res.status(500).json({ code: -1, message: 'Internal server error' });
     }
 });
+
+
+
+
+app.post('/score/player', async (req, res) => {
+    const score = req.body;
+
+    if (!score) {
+        return res.status(400).json({ message: 'Invalid input data' });
+    }
+
+    try {
+        const userSfId = ((JSON.parse(localStorage.getItem('userData')))?.user.sfId)
+        const user_name = ((JSON.parse(localStorage.getItem('userData')))?.user.name)
+        const playerUpdated = await checkExistingPlayer(userdata);
+        if (playerUpdated) {
+            return res.status(200).json({ code: 0, message: 'Score updated successfully' });
+        }
+        const sql = `INSERT INTO leaderboard (user_name, sfID, points) VALUES (?, ?, ?)`;
+        const values = [score, userSfId, user_name];
+
+        con.query(sql, values, (err, result) => {
+            if (err) {
+                return res.status(400).json({ code: 4, message: "Player's score insertion failed"});
+            }
+            res.status(200).json({ code: 0, message: 'Player added successfully' });
+        });
+    } catch (error) {
+        res.status(500).json({ code: -1, message: 'Internal server error' });
+    }
+});
+
+
+
+
+
+
+
+
 
 // Smash the cans 
 
