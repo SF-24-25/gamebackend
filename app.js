@@ -209,7 +209,7 @@ app.post('/cans/player', async (req, res) => {
         if (playerUpdated) {
             return res.status(200).json({ code: 0, message: 'Score updated successfully' });
         }
-        const sql = `INSERT INTO leaderb_cans (user_name, points_m) VALUES (?, ?, ?)`;
+        const sql = `INSERT INTO leaderb_cans (user_name, points_m, pin) VALUES (?, ?, ?)`;
         const values = [userdata.user_name, userdata.points_m, userdata.pin];
 
         con.query(sql, values, (err, result) => {
