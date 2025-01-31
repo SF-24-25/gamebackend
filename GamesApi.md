@@ -260,7 +260,7 @@ Response:
 ## 8. Check Existing Player
 
 ### POST /cans/player
-Endpoint: https://sf-games-apis.onrender.com/cans/checkPlayer
+Endpoint: `https://sf-games-apis.onrender.com/cans/checkPlayer`
 
 Checks if the user is an existing user or a new user.
 
