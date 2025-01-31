@@ -42,8 +42,8 @@ Response:
   "message": "Players Fetched Successfully",
   "players": [
     {
-      "user_name": "John",
-      "points": 120,
+      "user_name": "Stark",
+      "points": 3000,
       "players_rank": 1
     }
   ]
@@ -69,7 +69,7 @@ Adds a new player or updates their score if they already exist.
 Request Body:
 ```json
 {
-  "user_name": "John",
+  "user_name": "Stark",
   "pin": "1235",
   "points": 3000
 }
@@ -123,10 +123,11 @@ Response:
 }
 ```
 
+For an existing user
 ```json
 {
   "code": 0,
-  "message": "Enter the game" //for an existing user
+  "message": "Enter the game" 
 }
 ```
 
@@ -166,7 +167,7 @@ Response:
   "code": 0,
   "message": "Player's details fetched successfully",
   "player": {
-    "user_name": "John",
+    "user_name": "Stark",
     "points": 3000
   }
 }
@@ -206,7 +207,7 @@ Response:
   "players": [
     {
       "user_name": "Stark",
-      "points_m": 200,
+      "points_m": 3000,
       "players_rank": 1
     }
   ]
@@ -274,7 +275,8 @@ Request Body:
 {
   "user_name": "Stark",
   "pin": "1235"
-}```
+}
+```
 
 Response:
 
@@ -286,10 +288,11 @@ Response:
 }
 ```
 
+For an existing user
 ```json
 {
   "code": 0,
-  "message": "Enter the game" //for an existing user
+  "message": "Enter the game" 
 }
 ```
 
