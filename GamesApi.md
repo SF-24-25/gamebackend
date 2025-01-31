@@ -29,6 +29,7 @@ Response:
 ## 2. Fetch Leaderboard
 
 ### GET /players
+Endpoint: `https://sf-games-apis.onrender.com/players`
 
 Retrieves all players from the leaderboard, ranked by their points.
 
@@ -61,6 +62,7 @@ Response:
 ## 3. Add or Update Player
 
 ### POST /player
+Endpoint: `https://sf-games-apis.onrender.com/player`
 
 Adds a new player or updates their score if they already exist.
 
@@ -68,8 +70,8 @@ Request Body:
 ```json
 {
   "user_name": "John",
-  "sfID": "SF12345",
-  "points": 150
+  "pin": "1235",
+  "points": 3000
 }
 ```
 
@@ -98,8 +100,8 @@ Response:
 
 ## 4. Check Existing Player
 
-### POST /cans/player
-Endpoint: https://sf-games-apis.onrender.com/cans/checkPlayer
+### POST /player
+Endpoint: `https://sf-games-apis.onrender.com/checkPlayer`
 
 Checks if the user is an existing user or a new user.
 
@@ -124,7 +126,7 @@ Response:
 ```json
 {
   "code": 0,
-  "message": "Enter the game" //for existing user
+  "message": "Enter the game" //for an existing user
 }
 ```
 
@@ -148,12 +150,13 @@ Response:
 ## 5. Fetch Single Player
 
 ### GET /player
+Endpoint: `https://sf-games-apis.onrender.com/player?user_name=${user_name}`
 
-Fetches details of a single player by their sfID.
+Fetches details of a single player by their user_name.
 
 Query Parameters:
 
-sfID (required): The unique ID of the player.
+user_name (required): The unique user_name of the player.
 
 Response:
 
@@ -164,7 +167,7 @@ Response:
   "message": "Player's details fetched successfully",
   "player": {
     "user_name": "John",
-    "points": 150
+    "points": 3000
   }
 }
 ```
@@ -173,7 +176,7 @@ Response:
 ```json
 {
   "code": 1,
-  "message": "sfID is required"
+  "message": "user_name is required"
 }
 ```
 
@@ -189,6 +192,7 @@ Response:
 ## 6. Fetch Smash the Cans Leaderboard
 
 ### GET /cans/players
+Endpoint: `https://sf-games-apis.onrender.com/cans/players`
 
 Retrieves the leaderboard for the "Smash the Cans" game, ranked by points_m.
 
@@ -201,7 +205,7 @@ Response:
   "message": "Players Fetched Successfully",
   "players": [
     {
-      "user_name": "Jane",
+      "user_name": "Stark",
       "points_m": 200,
       "players_rank": 1
     }
@@ -221,15 +225,16 @@ Response:
 ## 7. Add or Update Smash the Cans Player
 
 ### POST /cans/player
+Endpoint: `https://sf-games-apis.onrender.com/cans/player`
 
 Adds a new player or updates their score in the "Smash the Cans" leaderboard.
 
 Request Body:
 ```json
 {
-  "user_name": "Jane",
-  "sfID": "SF98765",
-  "points_m": 250
+  "user_name": "Stark",
+  "pin": "1235",
+  "points_m": 3000
 }
 ```
 
@@ -284,7 +289,7 @@ Response:
 ```json
 {
   "code": 0,
-  "message": "Enter the game" //for existing user
+  "message": "Enter the game" //for an existing user
 }
 ```
 
@@ -308,12 +313,13 @@ Response:
 ## 9. Fetch Single Smash the Cans Player
 
 ### GET /cans/player
+Endpoint: `https://sf-games-apis.onrender.com/cans/player?user_name=${user_name}`
 
-Fetches details of a single "Smash the Cans" player by their sfID.
+Fetches details of a single "Smash the Cans" player by their user_name.
 
 Query Parameters:
 
-sfID (required): The unique ID of the player.
+user_name (required): The unique user_name of the player.
 
 Response:
 
@@ -323,7 +329,7 @@ Response:
   "code": 0,
   "message": "Player's details fetched successfully",
   "player": {
-    "user_name": "Jane",
+    "user_name": "Stark",
     "points_m": 250
   }
 }
@@ -333,7 +339,7 @@ Response:
 ```json
 {
   "code": 1,
-  "message": "sfID is required"
+  "message": "user_name is required"
 }
 ```
 
