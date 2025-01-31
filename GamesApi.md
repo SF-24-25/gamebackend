@@ -115,7 +115,7 @@ Request Body:
 
 Response:
 
-200 OK (Score updated)
+200 OK (New User)
 ```json
 {
   "code": 0,
@@ -280,7 +280,7 @@ Request Body:
 
 Response:
 
-200 OK (Score updated)
+200 OK (New User)
 ```json
 {
   "code": 0,
